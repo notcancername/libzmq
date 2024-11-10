@@ -1,0 +1,20 @@
+.{
+    .name = "libzmq",
+    .version = "4.3.5",
+    .dependencies = .{
+        .upstream = .{
+            .url = "git+https://github.com/zeromq/libzmq?ref=4.3.5#622fc6dde99ee172ebaa9c8628d85a7a1995a21d",
+            .hash = "12209a504ec77ecddcd0751c67e2baa229c3ff8a7e83283469e234ac5a2531f2f11a",
+        },
+        .sodium = .{
+            .url = "git+https://github.com/jedisct1/libsodium#985ad65bfb1563ca69e0bc0248e15da4f5cf575f",
+            .hash = "12205395d115cab8388ff0b9ec7b2caac1c349c7d01052c4b8f469532d1c51e0fb28",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "LICENSE",
+        "README.md",
+    },
+}
