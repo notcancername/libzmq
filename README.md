@@ -3,7 +3,7 @@ Zig build system for [libzmq](https://github.com/zeromq/libzmq).
 
 By default, everything is built barebones, with no libraries used. No auto-configuration is performed (yet?).
 
-Compiling tested for Windows, Linux, OS X, all x86_64, with =0.14.0-dev.2210+62f4a6b4d=.
+Compiling tested for Windows, Linux, OS X, all x86_64, with `0.14.0-dev.2210+62f4a6b4d`.
 
 ## Build options
 ### General
@@ -32,7 +32,7 @@ Compiling tested for Windows, Linux, OS X, all x86_64, with =0.14.0-dev.2210+62f
   library. This is not recommended for security, as it is impossible to update the library, but it
   may be convenient.
 - `-Dgnutls=true`: Use [GnuTLS](https://gnutls.org/) for secure WebSockets.
-- `-Dgssapi_krb5=true`: Use [https://github.com/estokes/libgssapi](libgssapi_krb5) for GSSAPI
+- `-Dgssapi_krb5=true`: Use [libgssapi_krb5](https://github.com/estokes/libgssapi) for GSSAPI
   authentication.
 - `-Dlibbsd=true`: Use [libbsd](https://github.com/JackieXie168/libbsd) for strlcpy.
 - `-Dvmci=true` Use VMCI.
