@@ -3,6 +3,8 @@ Zig build system for [libzmq](https://github.com/zeromq/libzmq).
 
 By default, everything is built barebones, with no libraries used. No auto-configuration is performed (yet?).
 
+Compiling tested for Windows, Linux, OS X, all x86_64, with =0.14.0-dev.2210+62f4a6b4d=.
+
 ## Build options
 ### General
 - `-Dstatic=true`: Default. Build a static library.
@@ -10,9 +12,9 @@ By default, everything is built barebones, with no libraries used. No auto-confi
 - `-Dtsan=true`: Use ThreadSanitizer.
 - `-Dubsan=true`: Use AddressSanitizer.
 ### ZMQ features
-- `-Dtipc=true`: Default. Enable TIPC.
 - `-Dsodium_close_randombytes=true`: Default. Automatically close libsodium randombytes. Not threadsafe without getrandom.
 - `-Dmilitant=true`: Default. Enable Militant assertions.
+- `-Dtipc=true`: Enable TIPC. Doesn't seem to work for Windows.
 - `-Ddraft=true`: Enable draft features.
 - `-Dcurve=true`: Enable ZMQ_CURVE support. Requires `-Dsodium=true`.
 - `-Dws=true`: WebSocket support. Draft.
