@@ -5,6 +5,30 @@ By default, everything is built barebones, with no libraries used. No auto-confi
 
 Compiling tested for Windows, Linux, OS X, all x86_64, with `0.14.0-dev.2210+62f4a6b4d`.
 
+## Building
+You'll likely want to configure some options, see below.
+
+```shell-session
+$ zig build
+```
+
+The artifacts will be ready to install in the `zig-out` directory.
+
+## Using from Zig
+
+- For a more friendly binding to libzmq, see [zlzmq](https://github.com/notcancername/zlzmq).
+- For a more high-level API, see [zzmq](https://github.com/nine-lives-later/zzmq).
+
+```shell-session
+$ zig fetch --save 'git+https://github.com/notcancername/libzmq#master'
+```
+
+```zig
+const libzmq_dep = b.dependency("libzmq", .{ .target = target, .optimize = .optimize, .shared = false });
+const libzmq = libzmq_dep.artifact("libzmq");
+exe.linkLibrary(libzmq);
+```
+
 ## Build options
 ### General
 - `-Dstatic=true`: Default. Build a static library.
