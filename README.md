@@ -3,7 +3,7 @@ Zig build system for [libzmq](https://github.com/zeromq/libzmq).
 
 By default, everything is built barebones, with no libraries used. No auto-configuration is performed (yet?).
 
-Compiling tested for Windows, Linux, OS X, all x86_64, with `0.14.0-dev.2210+62f4a6b4d`.
+Compiling tested for Windows, Linux, OS X, all x86_64, with `0.14.0-dev.2243+9ebce51e1`.
 
 ## Building
 You'll likely want to configure some options, see below.
