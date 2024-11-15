@@ -414,7 +414,13 @@ pub const Options = struct {
             c.linkSystemLibrary2("iphlpapi", .{});
             c.linkSystemLibrary2("rpcrt4", .{});
             // bruh
-            const m_winpthreads = b.lazyDependency("winpthreads", .{ .target = o.target, .optimize = o.optimize });
+            var t = o.target;
+            t.result.abi = .gnu;
+            t.query.abi = .gnu;
+            t.query.cpu_model = .baseline;
+            t.result.cpu = std.Target.Cpu.baseline(t.result.cpu.arch, t.result.os);
+
+            const m_winpthreads = b.lazyDependency("winpthreads", .{ .target = t, .optimize = o.optimize });
             if (m_winpthreads) |winpthreads| {
                 const l = winpthreads.artifact("winpthreads");
                 c.linkLibrary(l);
