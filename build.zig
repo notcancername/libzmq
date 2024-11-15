@@ -428,7 +428,7 @@ pub const Options = struct {
 
             if (c.isDll()) {
                 // MSVC, why?
-                c.defineCMacro("DLL_EXPORT", null);
+                c.defineCMacro("DLL_EXPORT", "__declspec(dllimport)");
             }
         } else {
             // TODO: determine when this is required
