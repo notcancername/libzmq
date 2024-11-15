@@ -6,8 +6,26 @@ pub fn build(b: *std.Build) !void {
     const upstream = b.dependency("upstream", .{ .target = o.target, .optimize = o.optimize });
     try o.config(b, upstream);
     if (o.debug) std.debug.print("{}", .{o});
-    if (try o.getShared(b, upstream)) |l| b.installArtifact(l);
-    if (try o.getStatic(b, upstream)) |l| b.installArtifact(l);
+
+    const shared = try o.getShared(b, upstream);
+    if (o.shared) b.installArtifact(shared);
+
+    const static = try o.getStatic(b, upstream);
+    if (o.static) b.installArtifact(static);
+
+    const example = b.addExecutable(.{
+        .target = o.target,
+        .optimize = o.optimize,
+        .name = "example",
+    });
+    example.addCSourceFile(.{ .file = b.path("example.c"), .flags = &.{"-std=c99"} });
+    if (o.shared) {
+        example.linkLibrary(shared);
+    } else {
+        example.linkLibrary(static);
+    }
+
+    b.step("example", "build example").dependOn(b.getInstallStep());
 }
 
 pub const Options = struct {
@@ -199,9 +217,7 @@ pub const Options = struct {
         if (o.want_draft) o.ch.addValues(.{ .ZMQ_BUILD_DRAFT_API = 1 });
     }
 
-    pub fn getStatic(o: Options, b: *std.Build, u: *std.Build.Dependency) !?*std.Build.Step.Compile {
-        if (!o.static) return null;
-
+    pub fn getStatic(o: Options, b: *std.Build, u: *std.Build.Dependency) !*std.Build.Step.Compile {
         const lib = b.addStaticLibrary(.{
             .name = "zmq",
             .target = o.target,
@@ -213,9 +229,7 @@ pub const Options = struct {
         return lib;
     }
 
-    pub fn getShared(o: Options, b: *std.Build, u: *std.Build.Dependency) !?*std.Build.Step.Compile {
-        if (!o.shared) return null;
-
+    pub fn getShared(o: Options, b: *std.Build, u: *std.Build.Dependency) !*std.Build.Step.Compile {
         const lib = b.addSharedLibrary(.{
             .name = "zmq",
             .target = o.target,
@@ -426,10 +440,8 @@ pub const Options = struct {
                 c.linkLibrary(l);
             }
 
-            if (c.isDll()) {
-                // MSVC, why?
-                c.defineCMacro("DLL_EXPORT", "__declspec(dllimport)");
-            }
+            // I hate Windows
+            c.defineCMacro("DLL_EXPORT", "__declspec(dllexport)");
         } else {
             // TODO: determine when this is required
             //c.linkSystemLibrary2("rt", .{  });
@@ -441,7 +453,7 @@ pub const Options = struct {
             if (o.vendor_sodium) {
                 const m_sodium = b.lazyDependency("sodium", .{ .shared = false, .target = o.target, .optimize = o.optimize });
                 if (m_sodium) |sodium| {
-                // meeeh!
+                    // meeeh!
                     const name = if (o.target.result.os.tag == .windows) "libsodium-static" else "sodium";
                     const sodium_s = sodium.artifact(name);
 
