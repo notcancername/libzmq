@@ -25,7 +25,7 @@ pub fn build(b: *std.Build) !void {
         example.linkLibrary(static);
     }
 
-    b.step("example", "build example").dependOn(b.getInstallStep());
+    b.step("example", "build example").dependOn(&b.addInstallArtifact(example, .{}).step);
 }
 
 pub const Options = struct {
@@ -63,7 +63,6 @@ pub const Options = struct {
     want_gssapi_krb5: bool,
     sodium_close_randombytes: bool,
     want_curve: bool,
-    vendor_sodium: bool,
     militant_assertions: bool,
     poller: ?Poller,
 
@@ -113,7 +112,6 @@ pub const Options = struct {
             .want_wss = b.option(bool, "wss", "enable websocket over tls support (false)") orelse false,
             .want_radix_tree = b.option(bool, "radix_tree", "enable radix tree to manage subscriptions, draft (false)") orelse false,
             .want_sodium = b.option(bool, "sodium", "link with libsodium for CURVE (false)") orelse false,
-            .vendor_sodium = b.option(bool, "vendor_sodium", "link with vendored libsodium instead of system for CURVE (false)") orelse false,
             .sodium_close_randombytes = b.option(bool, "sodium_close_randombytes", "automatically close libsodium randombytes, thread-unsafe without getrandom (true)") orelse true,
             .want_curve = b.option(bool, "curve", "enable CURVE security (false)") orelse false,
             .want_gssapi_krb5 = b.option(bool, "gssapi_krb5", "link system libgssapi_krb5 (false)") orelse false,
@@ -450,7 +448,7 @@ pub const Options = struct {
 
     fn addFeatures(o: *const Options, b: *std.Build, s: *std.Build.Step.Compile) !void {
         if (o.want_sodium) {
-            if (o.vendor_sodium) {
+            if (!b.systemIntegrationOption("sodium", .{})) {
                 const m_sodium = b.lazyDependency("sodium", .{ .shared = false, .target = o.target, .optimize = o.optimize });
                 if (m_sodium) |sodium| {
                     // meeeh!
